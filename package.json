@@ -1,0 +1,19 @@
+{
+  "name": "node_counter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Antidods/node_counter.git"
+  },
+  "author": "Andrey_St",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Antidods/node_counter/issues"
+  },
+  "homepage": "https://github.com/Antidods/node_counter#readme"
+}
