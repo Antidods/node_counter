@@ -1,19 +1,26 @@
 {
-  "name": "node_counter",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Antidods/node_counter.git"
-  },
-  "author": "Andrey_St",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Antidods/node_counter/issues"
-  },
-  "homepage": "https://github.com/Antidods/node_counter#readme"
+   "name": "node_counter",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "start": "node index.js",
+      "dev": "nodemon index.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Antidods/node_counter.git"
+   },
+   "author": "Andrey_St",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/Antidods/node_counter/issues"
+   },
+   "homepage": "https://github.com/Antidods/node_counter#readme",
+   "dependencies": {
+      "express": "^4.18.1",
+      "morgan": "^1.10.0",
+      "mysql": "^2.18.1",
+      "nodemon": "^2.0.19"
+   }
 }
