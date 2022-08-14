@@ -7,7 +7,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use('/sqlAdd', require('./routes/sql.js'));
+app.use('/sqladd', require('./routes/sql.js'));
 
 app.listen(port, () => {
    console.log('server node_counter started on localhost:' + port);
