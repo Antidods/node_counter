@@ -15,8 +15,8 @@ const addToSql =
 sqlAdd.post('/', (req, res) => {
    connection.connect();
    connection.query(addToSql);
-   connection.end();
    res.send('add data to MySQL');
+   connection.end();
 });
 
 module.exports = sqlAdd;
