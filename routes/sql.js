@@ -13,10 +13,8 @@ const addToSql =
    'INSERT INTO click(id, date, time) VALUES (rand()*10000,CURRENT_DATE,CURRENT_TIME)';
 
 sqlAdd.post('/', (req, res) => {
-   connection.connect();
    connection.query(addToSql);
    res.send('add data to MySQL');
-   connection.end();
 });
 
 module.exports = sqlAdd;
