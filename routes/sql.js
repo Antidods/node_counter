@@ -13,7 +13,9 @@ const addToSql =
    'INSERT INTO click(id, date, time) VALUES (rand()*10000,CURRENT_DATE,CURRENT_TIME)';
 
 sqlAdd.post('/', (req, res) => {
-   connection.query(addToSql);
+   connection.query(addToSql, function (err, rows, fields) {
+      if (err) throw err;
+   });
    res.send('add data to MySQL');
 });
 
