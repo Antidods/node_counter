@@ -9,6 +9,11 @@ String Link;
 #include "GyverButton.h"
 GButton butt1(BTN_PIN);
 
+int frequency = 1000; //частота Hz
+int buzzPin = 4;
+int timeOn = 1000; //время работы в milliseconds
+int timeOff = 1000; //время ожидания в millisecods
+
 // void setDebounce(uint16_t debounce);        // установка времени антидребезга (по умолчанию 80 мс)
 // void setTimeout(uint16_t timeout);          // установка таймаута удержания (по умолчанию 300 мс)
 // void setClickTimeout(uint16_t timeout);      // установка таймаута между кликами (по умолчанию 500 мс)  
@@ -78,6 +83,7 @@ void transmit() {
    Serial.print("http://");
    Serial.print(host);
    Serial.print(url);
+   Serial.println();
    httpClient.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
    unsigned long timeout = millis();
    while (httpClient.available() == 0) {
@@ -91,6 +97,19 @@ void transmit() {
    Serial.println();
    Serial.println("closing connection");
  }
+
+void beep() {
+      pinMode (buzzPin, OUTPUT);
+      tone(buzzPin, 1500);
+      delay(200);
+      tone(buzzPin, 1000);
+      delay(200);
+      tone(buzzPin, 500);
+      delay(200);
+      noTone(buzzPin);
+      delay(2000);
+}
+
  
 void loop() {
     // два клика
@@ -101,6 +120,7 @@ void loop() {
       Serial.println("===============================");
       transmit();
       Serial.println("===============================");
+      beep();
    }
 
 }
