@@ -49,7 +49,51 @@ const char *ssid = "xiaomi mi3";
 const char *password = "chipolino";
 const char *host = "94.158.219.206";
 
+class Voice {
+   public:
+      void beep() {
+         pinMode (buzzPin, OUTPUT);
+         tone(buzzPin, 1500);
+         delay(200);
+         tone(buzzPin, 1000);
+         delay(200);
+         tone(buzzPin, 500);
+         delay(200);
+         noTone(buzzPin);
+         delay(2000);
+      }
+
+      void on() {
+         pinMode (buzzPin, OUTPUT);
+         tone(buzzPin, 500);
+         delay(200);
+         tone(buzzPin, 1000);
+         delay(200);
+         tone(buzzPin, 1500);
+         delay(200);
+         noTone(buzzPin);
+         delay(2000);
+      }
+      
+      void btn() {
+         pinMode (buzzPin, OUTPUT);
+         tone(buzzPin, 1500);
+         delay(300);
+         noTone(buzzPin);
+         delay(200);
+         tone(buzzPin, 1500);
+         delay(300);
+         noTone(buzzPin);
+         delay(2000);
+      }             
+
+
+};
+
+Voice voice;
+
 void setup() {
+   voice.on();
    delay(1000);
    Serial.begin(9600);
    WiFi.mode(WIFI_OFF);
@@ -98,29 +142,31 @@ void transmit() {
    Serial.println("closing connection");
  }
 
-void beep() {
-      pinMode (buzzPin, OUTPUT);
-      tone(buzzPin, 1500);
-      delay(200);
-      tone(buzzPin, 1000);
-      delay(200);
-      tone(buzzPin, 500);
-      delay(200);
-      noTone(buzzPin);
-      delay(2000);
-}
+// void beep() {
+//       pinMode (buzzPin, OUTPUT);
+//       tone(buzzPin, 1500);
+//       delay(200);
+//       tone(buzzPin, 1000);
+//       delay(200);
+//       tone(buzzPin, 500);
+//       delay(200);
+//       noTone(buzzPin);
+//       delay(2000);
+// }
 
- 
+
+
 void loop() {
     // два клика
    butt1.tick();  
    if (butt1.isDouble()) {
+      voice.btn();
       Serial.println("===============================");
       Serial.println("double click");
       Serial.println("===============================");
       transmit();
       Serial.println("===============================");
-      beep();
+      voice.beep();
    }
 
 }
