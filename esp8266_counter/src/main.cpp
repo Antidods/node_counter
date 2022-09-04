@@ -2,79 +2,105 @@
 #include <WiFiClientSecure.h> 
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
-WiFiClient wifiClient;
-boolean recievedFlag;
-String strData, Link;
+// WiFiClient wifiClient;
+String Link;
 
-// ловим степ с накликиванием
 #define BTN_PIN 5				// кнопка подключена сюда (BTN_PIN --- КНОПКА --- GND)
 #include "GyverButton.h"
 GButton butt1(BTN_PIN);
 
-//Вводим параметры своей точки доступа WIFI 
-const char *ssid = "xiaomi mi3";                           //Название точки доступа
-const char *password = "chipolino";                           //Пароль точки доступа 
-const char *host = "94.158.219.206:3000";       //Адрес нашего веб сервера
-const int httpsPort = 80;                                    //Адрес порта для HTTPS= 443 или HTTP = 80
+// void setDebounce(uint16_t debounce);        // установка времени антидребезга (по умолчанию 80 мс)
+// void setTimeout(uint16_t timeout);          // установка таймаута удержания (по умолчанию 300 мс)
+// void setClickTimeout(uint16_t timeout);      // установка таймаута между кликами (по умолчанию 500 мс)  
+// void setStepTimeout(uint16_t step_timeout); // установка таймаута между инкрементами (по умолчанию 400 мс)  
+// void setType(uint8_t type);     // установка типа кнопки (HIGH_PULL - подтянута к питанию, LOW_PULL - к gnd)  
+// void setDirection(uint8_t dir); // установка направления (разомкнута/замкнута по умолчанию - NORM_OPEN, NORM_CLOSE)  
+  
+// void setTickMode(uint8_t tickMode); // (MANUAL / AUTO) ручной или автоматический опрос кнопки функцией tick()  
+// // MANUAL - нужно вызывать функцию tick() вручную                            
+// // AUTO - tick() входит во все остальные функции и опрашивается сама
+  
+// void tick();               // опрос кнопки  
+// void tick(boolean state);  // опрос внешнего значения (0 нажато, 1 не нажато) (для матричных, резистивных клавиатур и джойстиков)
+  
+// boolean isPress();    // возвращает true при нажатии на кнопку. Сбрасывается после вызова
+// boolean isRelease();  // возвращает true при отпускании кнопки. Сбрасывается после вызова
+// boolean isClick();    // возвращает true при клике. Сбрасывается после вызова
+// boolean isHolded();   // возвращает true при удержании дольше timeout. Сбрасывается после вызова
+// boolean isHold();     // возвращает true при нажатой кнопке, не сбрасывается
+// boolean state();      // возвращает состояние кнопки
+// boolean isSingle();   // возвращает true при одиночном клике. Сбрасывается после вызова
+// boolean isDouble();   // возвращает true при двойном клике. Сбрасывается после вызова
+// boolean isTriple();   // возвращает true при тройном клике. Сбрасывается после вызова
+  
+// boolean hasClicks();  // проверка на наличие кликов. Сбрасывается после вызова
+// uint8_t getClicks();  // вернуть количество кликов
+// uint8_t getHoldClicks();// вернуть количество кликов, предшествующее удерживанию
+  
+// boolean isStep();     // возвращает true по таймеру setStepTimeout, смотри пример
+// void resetStates();   // сбрасывает все is-флаги и счётчики
 
-// Обьявление функции подключения к точкt доступа WIFI 
+const char *ssid = "xiaomi mi3";
+const char *password = "chipolino";
+const char *host = "94.158.219.206";
+
 void setup() {
- delay(1000);                                                 //Ждем
- Serial.begin(9600);                                          //Настройка скорости UART
- WiFi.mode(WIFI_OFF);                                         //Перезапуск точки доступа
- delay(1000);                                                 //Ждем
- WiFi.mode(WIFI_STA);                                         //Настраиваем ESP в режиме клиента
- WiFi.begin(ssid, password);                                  //Подключаемся к точке доступа
- Serial.println("");
- Serial.print("Connecting");                                  //Пишем в UART что соединяемся
- // Ждем соединения
- while (WiFi.status() != WL_CONNECTED) {delay(500);
- Serial.print(".");}                                          //Пока пытаемся соединиться отправляем в UART точки
- Serial.println("");                                          //Если удачно подключились
- Serial.print("Connected to ");                               //Пишем в UART:
- Serial.println(ssid);                                        //Название точки доступа
- Serial.print("IP address: ");
- Serial.println(WiFi.localIP());                              //IP адрес назначенный нашему ESP
+   delay(1000);
+   Serial.begin(9600);
+   WiFi.mode(WIFI_OFF);
+   delay(1000);
+   WiFi.mode(WIFI_STA);
+   WiFi.begin(ssid, password);
+   Serial.println("");
+   Serial.print("Connecting");
+   while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+}
+   Serial.println("");
+   Serial.print("Connected to ");
+   Serial.println(ssid);
+   Serial.print("IP address: ");
+   Serial.println(WiFi.localIP());
 }
 
 // Обьявление функции передачи данных
 void transmit() {
- WiFiClientSecure httpsClient;                                //Обьявляем обьект класса WiFiClient
- Serial.println(host);                                        //Пишем в UART: адрес нашего веб сервера,
- httpsClient.setTimeout(15000);                               //Присваиваем значение паузы (15 секунд)
- delay(1000);                                                 //Ждем                                     
- Serial.print("HTTPS Connecting");                            //Пишем в UART: Соединяемся с нашим веб сервером
- int r=0;                                                     //Обьявляем переменную счетчика попыток подключения
- while((!httpsClient.connect(host, httpsPort)) && (r < 30))
- {delay(100);Serial.print(".");r++;}                          //Пока пытаемся соединиться с веб сервером отправляем в UART точки
- if(r==30) {Serial.println("Connection failed");}             //Если не получилось соединиться пишем в UART, что не получилось  
- else {Serial.println("Connected to web");}                   //Если получилось соединиться пишем в UART, что получилось  
- Link = "/sqladd";                                            //Формируем строку для GET запроса
- Serial.print("requesting URL: ");                            //Пишем в UART что отправляем GET запрос
- Serial.println(host+Link);                                   //Пишем в UART GET запрос
- httpsClient.print(String("GET ") + Link + " HTTP/1.1\r\n" +  
- "Host: " + host + "\r\n" + 
- "Connection: close\r\n\r\n");                                //Отправляем GET запрос через ESP
- Serial.println("request sent");                              //Пишем в UART что GET запрос отправлен
- while (httpsClient.connected())                              //Ловим ответ веб сервера
- {String line = httpsClient.readStringUntil('\n');
- if (line == "\r") {Serial.println("headers received");break;}}
- Serial.println("reply was:");                                //Пишем в UART что веб сервер ответил
- Serial.println("==========");                                //Для красоты выводим в UART разграничивающую линию
- String line;                                                 //Формируем строку для ответа веб сервера
- while(httpsClient.available()){                              //Ловим строку от веб сервера
- line = httpsClient.readStringUntil('\n');                    
- Serial.println(line);}                                       //Пишем в UART строку от веб сервера
- Serial.println("==========");                                //Для красоты выводим в UART разграничивающую линию
- Serial.println("closing connection");}                       //Пишем в UART, что закрыли соединение с веб сервером
+   WiFiClient httpClient;
+   const int httpPort = 3000;
+   if (!httpClient.connect(host, httpPort)) {
+      Serial.println("connection failed");
+      return;
+   }
+   
+   String url = "/sqladd";
+   Serial.print("Requesting URL: ");
+   Serial.print("http://");
+   Serial.print(host);
+   Serial.print(url);
+   httpClient.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+   unsigned long timeout = millis();
+   while (httpClient.available() == 0) {
+      if (millis() - timeout > 5000)
+      { Serial.println(">>> httpClient Timeout !");
+      httpClient.stop(); return; } 
+   }
+   while (httpClient.available()){
+      String line = httpClient.readStringUntil('\r'); Serial.print(line);
+   }
+   Serial.println();
+   Serial.println("closing connection");
+ }
  
-//Основная функция
 void loop() {
     // два клика
    butt1.tick();  
    if (butt1.isDouble()) {
-    Serial.println("double click");
-    transmit();
+      Serial.println("===============================");
+      Serial.println("double click");
+      Serial.println("===============================");
+      transmit();
+      Serial.println("===============================");
    }
 
 }
