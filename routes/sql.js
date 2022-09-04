@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 const addToSql =
    'INSERT INTO click(id, date, time) VALUES (rand()*10000,CURRENT_DATE,CURRENT_TIME)';
 
-sqlAdd.post('/', (req, res) => {
+sqlAdd.get('/', (req, res) => {
    connection.query(addToSql, function (err, rows, fields) {
       if (err) throw err;
    });
