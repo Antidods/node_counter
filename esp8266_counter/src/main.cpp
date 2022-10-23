@@ -45,9 +45,9 @@ int timeOff = 1000; //время ожидания в millisecods
 // boolean isStep();     // возвращает true по таймеру setStepTimeout, смотри пример
 // void resetStates();   // сбрасывает все is-флаги и счётчики
 
-const char *ssid = "xiaomi mi3";
-const char *password = "chipolino";
-const char *host = "94.158.219.206";
+const char *ssid = "";
+const char *password = "";
+const char *host = "";
 
 class Voice {
    public:

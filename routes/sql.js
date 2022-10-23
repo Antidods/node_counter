@@ -3,10 +3,10 @@ const sqlAdd = express.Router();
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-   host: 'localhost',
-   database: 'Antidods_nodemcu',
-   user: 'Antidods_nodemcu',
-   password: 'NMJcbbDyev21',
+   host: '',
+   database: '',
+   user: '',
+   password: '',
 });
 
 const addToSql =
